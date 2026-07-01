@@ -33,6 +33,19 @@ positives. You stay in control — nothing is changed without your per-flow go-a
 
 ## Install
 
+### Option 1 — as a plugin (recommended)
+
+In Claude Code, add this repo as a plugin marketplace, then install:
+
+```
+/plugin marketplace add liewjiajun/pair-vibing
+/plugin install pair-vibing@liewjiajun
+```
+
+No file copying, and `/plugin marketplace update liewjiajun` pulls future updates.
+
+### Option 2 — copy into your skills folder (no plugin system)
+
 ```bash
 git clone https://github.com/liewjiajun/pair-vibing.git
 cd pair-vibing
@@ -40,43 +53,51 @@ cd pair-vibing
 
 **Windows (PowerShell):**
 ```powershell
+$src  = "plugin\skills\pair-vibing"
 $dest = "$env:USERPROFILE\.claude\skills\pair-vibing"
 New-Item -ItemType Directory -Force -Path $dest, "$dest\references" | Out-Null
-Copy-Item skill\SKILL.md $dest -Force
-Copy-Item skill\references\* "$dest\references" -Force
+Copy-Item "$src\SKILL.md" $dest -Force
+Copy-Item "$src\references\*" "$dest\references" -Force
 ```
 
 **macOS / Linux:**
 ```bash
 mkdir -p ~/.claude/skills/pair-vibing/references
-cp skill/SKILL.md ~/.claude/skills/pair-vibing/
-cp skill/references/* ~/.claude/skills/pair-vibing/references/
+cp plugin/skills/pair-vibing/SKILL.md ~/.claude/skills/pair-vibing/
+cp plugin/skills/pair-vibing/references/* ~/.claude/skills/pair-vibing/references/
 ```
 
 The skill loads at session start.
 
 ## Use
 
-In a project you want to review:
+If you installed the **plugin**, invoke it explicitly with:
 
 ```
-/pair-vibing
+/pair-vibing:pair-vibing
 ```
 
-…or just ask Claude to **"pair vibe"** or **"vibe check the flows"**.
+If you **copied it into your skills folder**, use `/pair-vibing`. Either way, you can just
+ask Claude to **"pair vibe"** or **"vibe check the flows"** — the skill triggers on intent.
 
 ## Repo layout
 
 ```
-skill/                     the skill itself (this is what gets installed)
-  SKILL.md
-  references/
-    review-rubric.md       the four-dimension rubric
-    flow-discovery.md      how flows are discovered
-    tracker-template.md    the flows.md tracker format
-docs/superpowers/          design spec + implementation plan
-test-fixtures/notes-app/   a deliberately-broken app used to test the skill
-test-fixtures/*-notes.md   RED (no skill) vs GREEN (with skill) test evidence
+.claude-plugin/
+  marketplace.json          makes this repo an installable plugin marketplace
+plugin/                     the installable plugin
+  .claude-plugin/
+    plugin.json             plugin manifest
+  skills/
+    pair-vibing/            the skill itself
+      SKILL.md
+      references/
+        review-rubric.md    the four-dimension rubric
+        flow-discovery.md   how flows are discovered
+        tracker-template.md the flows.md tracker format
+docs/superpowers/           design spec + implementation plan
+test-fixtures/notes-app/    a deliberately-broken app used to test the skill
+test-fixtures/*-notes.md    RED (no skill) vs GREEN (with skill) test evidence
 ```
 
 ## How it was built

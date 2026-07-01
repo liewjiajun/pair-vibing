@@ -1,0 +1,10 @@
+{
+  "name": "pair-vibing",
+  "description": "Pairs you with the agent to review a project's user flows one at a time — mechanics, edge cases, dead ends, and UX — and fix them as you go.",
+  "version": "1.0.0",
+  "author": {
+    "name": "liewjiajun"
+  },
+  "homepage": "https://github.com/liewjiajun/pair-vibing",
+  "repository": "https://github.com/liewjiajun/pair-vibing"
+}
