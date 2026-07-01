@@ -19,7 +19,9 @@ Copy the block below and fill it in.
 | 2 | Reset password | high | in-review |
 | 3 | Create post | medium | pending |
 
-Status values: `pending` → `in-review` → `done` (or `deferred`).
+Status values: `pending` → `in-review` → `done` (or `deferred`). A flow is `done` once
+every finding is resolved (fixed, accepted, or explicitly deferred); mark the flow itself
+`deferred` if you are skipping it for now.
 
 ---
 
@@ -31,13 +33,16 @@ Status values: `pending` → `in-review` → `done` (or `deferred`).
 
 ### Findings
 
-| # | Severity | Dimension | Finding | Evidence | Resolution |
-|---|----------|-----------|---------|----------|------------|
-| 1 | blocker | mechanics | Submit button calls no handler | `signup.tsx:40` | fixed — wired to `createUser()` |
-| 2 | major | edge | No error shown on duplicate email | `signup.tsx:55` | fixed — surfaces API 409 |
-| 3 | minor | ux | No loading state on submit | `signup.tsx:44` | deferred |
+Dimension keys: `mechanics` / `edge` / `gaps` / `ux` (see `review-rubric.md`).
 
-Resolution values: `fixed` / `accepted` / `deferred` / `not-real`.
+| # | Severity | Dimension | Finding | Evidence | Recommendation | Resolution |
+|---|----------|-----------|---------|----------|----------------|------------|
+| 1 | blocker | mechanics | Submit button calls no handler | `signup.tsx:40` | Wire to `createUser()` | fixed |
+| 2 | major | edge | No error shown on duplicate email | `signup.tsx:55` | Surface API 409 inline | fixed |
+| 3 | minor | ux | No loading state on submit | `signup.tsx:44` | Disable button + spinner during submit | deferred |
+
+Resolution values: `fixed` / `accepted` / `deferred` / `not-real` — the recorded outcome of
+each per-finding decision (fix / accept / defer / not-real).
 
 ### Decisions
 - Duplicate-email copy approved by the user: "That email is already registered."

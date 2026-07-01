@@ -47,3 +47,8 @@ Does the flow feel right to a real user?
 - **Blocker** — the flow cannot be completed, or it loses/corrupts data.
 - **Major** — works on the happy path but breaks on a common edge, or is badly confusing.
 - **Minor** — polish, clarity, or rare-edge improvement.
+
+## Tracker dimension keys
+When logging a finding to the tracker, use the short key for its dimension:
+`mechanics` (Mechanics & wiring), `edge` (Edge & error states), `gaps` (Gaps & dead ends),
+`ux` (UX friction & clarity).

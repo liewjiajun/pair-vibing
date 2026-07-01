@@ -88,8 +88,8 @@ Respect their choice for the whole session. Only run the verifier subagent (Phas
 
 ## Subagent orchestration
 
-- Discovery and per-flow deep-trace run as dispatched subagents (Task/Agent tool; use the
-  Workflow tool if available for many flows).
+- Discovery and per-flow deep-trace run as dispatched subagents (Task/Agent tool; or a
+  workflow/orchestration tool for many flows, if your environment provides one).
 - **Degrade gracefully:** for a tiny project, or when subagents aren't available, do the
   analysis inline. The process (inventory → per-flow rubric → discuss → fix → track) is unchanged.
 
