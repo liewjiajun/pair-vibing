@@ -1,5 +1,11 @@
 # Pair Vibing Skill Implementation Plan
 
+> **Historical note (2026-07-02):** this plan predates the plugin repackaging (commit
+> `a5bf454`). The deliverable moved from `skill/` to `plugin/skills/pair-vibing/`, and the
+> recommended install is now the plugin marketplace (see the top-level README) rather than
+> copying into `~/.claude/skills`. Paths and install commands below reflect the original
+> layout and will not work verbatim against today's tree.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build the `pair-vibing` skill — a subagent-orchestrated skill that pairs the user with the agent to review a project's user flows one at a time, apply agreed fixes, and track progress in a resumable `flows.md`.
@@ -530,7 +536,7 @@ The with-skill run MUST surface at least these planted defects, each with `file:
 2. Add note: no empty-title validation — major, edge (`app.js` createNote / `server.js` POST).
 3. Add note: input not cleared / no success feedback — minor, UX (`app.js`).
 4. Delete note: `app.js` calls `DELETE /notes/:id` but `server.js` has no such route (`server.js` TODO comment) — blocker, gap/mechanics.
-5. Delete note: no confirmation before delete — minor, UX (`app.js` deleteNote).
+5. Delete note: no confirmation before delete — major, UX (`app.js` deleteNote).
 6. Any flow: no fetch error handling — major, edge (`app.js`).
 7. View notes: no empty-state message — minor, UX.
 

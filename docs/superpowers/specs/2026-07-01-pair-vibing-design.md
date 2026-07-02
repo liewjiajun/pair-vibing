@@ -4,6 +4,11 @@
 **Status:** Approved (design), pending implementation plan
 **Type:** Claude Code skill
 
+> **Historical note (2026-07-02):** this spec predates the plugin repackaging (commit
+> `a5bf454`). The skill now ships at `plugin/skills/pair-vibing/` and installs as a plugin
+> (invoked as `/pair-vibing:pair-vibing`); the copy-into-`~/.claude/skills` install described
+> below still works but is no longer the primary path. See the top-level README.
+
 ## Problem
 
 When Claude generates a project quickly ("vibe coding"), it produces a lot of

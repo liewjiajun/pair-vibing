@@ -6,3 +6,10 @@ A tiny app for keeping short notes.
 1. **Add a note** — type a title, click Add, the note appears in the list.
 2. **Delete a note** — click Delete next to a note, it disappears.
 3. **View notes** — notes load automatically when the page opens.
+
+## Run
+
+```bash
+npm install
+npm start   # http://localhost:3000
+```

@@ -1,0 +1,8 @@
+# npm artifacts (the notes-app fixture installs express to run)
+node_modules/
+package-lock.json
+
+# pair-vibing flow trackers written by test runs of the skill
+# (anchored so plugin/skills/pair-vibing/ is NOT matched)
+/pair-vibing/
+test-fixtures/notes-app/pair-vibing/

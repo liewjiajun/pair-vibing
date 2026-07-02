@@ -106,3 +106,7 @@ Test-first. A deliberately-broken sample app is the test bed: a baseline review 
 skill caught 5 of 7 planted defects with no structure, while the same review **with** the skill
 caught all 7 — organized into a per-flow inventory with severity and `file:line` evidence. See
 `test-fixtures/baseline-notes.md` (RED) and `test-fixtures/with-skill-notes.md` (GREEN).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
