@@ -28,9 +28,17 @@ For every candidate flow it finds:
 - `steps` — the sequence, at a high level.
 - `locations` — the key `file:line` references the flow touches.
 
-## Merge & sign-off
+## Merge & sign-off (intent blessing)
 - Merge all subagent results; dedupe overlapping flows; combine partial traces.
 - Present the merged inventory to the user. Ask them to: add missing flows, remove
   anything that is not a real user flow, and set a priority order.
-- **Do not start Phase 2 until the user confirms the inventory.** This completeness
-  gate guarantees no flow is silently skipped.
+- **Bless intent per flow:** ask the user to confirm or correct each flow's goal and
+  key steps as their INTENDED behavior — explicitly inviting rules the code cannot
+  show (confirmations, ordering, defaults, where the user should land). Tell them:
+  "This is the intent the review will verify each flow against." Intent precedence:
+  the user's statements > spec/PRD/docs > the agent-inferred goal. If the user says
+  "whatever it does today is fine" for a flow, adopt current behavior as its intent
+  and log that under the flow's Decisions.
+- **Do not start Phase 2 until the user confirms the inventory and per-flow intent.**
+  This completeness gate guarantees no flow is silently skipped and every flow has a
+  reference intent to verify against.
