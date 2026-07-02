@@ -1,15 +1,17 @@
 # pair-vibing
 
 A [Claude Code](https://claude.com/claude-code) skill that pairs you with the agent to
-review a project's **user flows one at a time** — catching the broken mechanics, missing
-edge cases, dead-end flows, and rough UX that slip through when a project is built fast.
+review a project's **user flows one at a time** — verifying each flow does what you
+intended, and catching the broken mechanics, missing edge cases, dead-end flows, and
+rough UX that slip through when a project is built fast.
 
 ## The problem
 
 When you get an AI to build a project quickly ("vibe coding"), it generates a lot of code —
 but nobody ever walks each user flow to confirm the mechanics actually work and the edges are
 handled. Buttons that call nothing, error states that don't exist, flows that start but can't
-finish. It looks done; it isn't.
+finish — and flows that run flawlessly yet quietly do something you never asked for. It looks
+done; it isn't.
 
 ## What it does
 
@@ -17,8 +19,10 @@ pair-vibing runs a structured, meticulous, flow-by-flow review:
 
 1. **Discover** every user flow (reads the code if present, otherwise the spec/PRD/docs) and
    presents the inventory for your sign-off — the *completeness gate*, so nothing is silently
-   skipped.
-2. **Review** each flow, one at a time, against a four-dimension rubric:
+   skipped — where you also bless each flow's **intended behavior**.
+2. **Review** each flow, one at a time — opening with a walkthrough of what the flow
+   *actually does* and a verdict against your intent — scored on a five-dimension rubric:
+   - **Intent match** — does the flow do what you intended and asked for?
    - **Mechanics & wiring** — does each step actually work and connect?
    - **Edge & error states** — empty, loading, invalid, failure, permission, offline…
    - **Gaps & dead ends** — unhandled branches, TODOs, flows that can't complete.
@@ -92,7 +96,7 @@ plugin/                     the installable plugin
     pair-vibing/            the skill itself
       SKILL.md
       references/
-        review-rubric.md    the four-dimension rubric
+        review-rubric.md    the five-dimension rubric (intent first)
         flow-discovery.md   how flows are discovered
         tracker-template.md the flows.md tracker format
 docs/superpowers/           design spec + implementation plan
