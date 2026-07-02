@@ -1,6 +1,6 @@
 # Intent-Alignment Test Notes (P8)
 
-Ground truth for the planted intent-mismatch defect and the RED/GREEN runs for the
+Ground truth for the defined intent-mismatch defect (no file plant) and the RED/GREEN runs for the
 pair-vibing v1.1 intent-alignment upgrade. P1–P7 are defined in `baseline-notes.md`.
 
 ## P8 — intent mismatch (unwritten user intent)
@@ -58,7 +58,7 @@ two consequential blocker `intent` findings (the blessed Add/Delete outcomes nev
 happen — P1/P4 restated through the intent lens), a double-submit race, no undo after
 delete, and no loading indicator. Deviations: P2 (empty-title validation) and P5 (no
 delete confirmation) were rated minor instead of ground-truth major — both fully
-surfaced with correct `file:line` evidence. The run also verified findings empirically
+surfaced with correct `file:line` evidence. One P6 instance (View notes) was also rated below ground truth; like P2/P5 this does not affect the pass criteria, which grade surfacing with evidence, not severity. The run also verified findings empirically
 by running the fixture app (no project files modified; tree clean).
 
 Verdict: **GREEN — the intent-alignment upgrade catches what v1.0 could not, with no

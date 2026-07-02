@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Executed 2026-07-02** on branch `build-intent-alignment` — all 8 tasks complete (Task 2 after two protocol redesigns; see the amendment notes). RED/GREEN evidence: `test-fixtures/intent-notes.md`.
+
 **Goal:** Upgrade the pair-vibing skill so every per-flow review verifies the flow's actual behavior against user-blessed intent, proven by a planted intent-mismatch defect (P8) the 1.0 skill misses and the 1.1 skill catches.
 
 **Architecture:** Intent is captured at the existing inventory sign-off gate, persisted as an `Intended:` line per flow in the tracker, and checked at the top of every per-flow review via a compact actual-behavior walkthrough + intent verdict from the deep-trace subagent. Divergences become ordinary findings with a new `intent` dimension and flow through the unchanged fix/accept/defer/not-real loop. TDD-for-skills: define P8 (unwritten, ask-gated user intent) → RED run (1.0 misses) → implement → GREEN run (1.1 catches, P1–P7 intact).

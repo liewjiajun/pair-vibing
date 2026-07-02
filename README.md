@@ -101,7 +101,7 @@ plugin/                     the installable plugin
         tracker-template.md the flows.md tracker format
 docs/superpowers/           design spec + implementation plan
 test-fixtures/notes-app/    a deliberately-broken app used to test the skill
-test-fixtures/*-notes.md    RED (no skill) vs GREEN (with skill) test evidence
+test-fixtures/*-notes.md    RED vs GREEN test evidence for each skill version
 ```
 
 ## How it was built
