@@ -4,7 +4,7 @@
 
 **Goal:** Upgrade the pair-vibing skill so every per-flow review verifies the flow's actual behavior against user-blessed intent, proven by a planted intent-mismatch defect (P8) the 1.0 skill misses and the 1.1 skill catches.
 
-**Architecture:** Intent is captured at the existing inventory sign-off gate, persisted as an `Intended:` line per flow in the tracker, and checked at the top of every per-flow review via a compact actual-behavior walkthrough + intent verdict from the deep-trace subagent. Divergences become ordinary findings with a new `intent` dimension and flow through the unchanged fix/accept/defer/not-real loop. TDD-for-skills: plant P8 → RED run (1.0 misses) → implement → GREEN run (1.1 catches, P1–P7 intact).
+**Architecture:** Intent is captured at the existing inventory sign-off gate, persisted as an `Intended:` line per flow in the tracker, and checked at the top of every per-flow review via a compact actual-behavior walkthrough + intent verdict from the deep-trace subagent. Divergences become ordinary findings with a new `intent` dimension and flow through the unchanged fix/accept/defer/not-real loop. TDD-for-skills: define P8 (unwritten, ask-gated user intent) → RED run (1.0 misses) → implement → GREEN run (1.1 catches, P1–P7 intact).
 
 **Tech Stack:** Markdown + YAML frontmatter (Claude Code skill format). Test runs dispatch a general-purpose subagent via the Agent tool. Spec: `docs/superpowers/specs/2026-07-02-intent-alignment-design.md`.
 
@@ -19,41 +19,26 @@
 
 ---
 
-### Task 1: Plant P8 — the intent-mismatch defect
+### Task 1: Define P8 — the intent-mismatch defect (no file plant)
+
+> **Amended 2026-07-02 (executed):** originally this task planted "newest note first"
+> into the fixture README (commit `20186c0`). The RED run caught it — a doc-stated
+> behavior becomes the flow's goal at sign-off, and the 1.0 skill checks flows against
+> stated goals. The plant was reverted (commit `3a4199d`; fixture verified byte-identical
+> to its pre-plant state). P8 is now defined entirely in the test protocol: it is
+> **unwritten user intent**, revealed by the simulated user only when asked.
 
 **Files:**
-- Modify: `test-fixtures/notes-app/README.md` (line 8)
+- (none — the fixture is not modified)
 
 **Interfaces:**
-- Produces: the P8 ground truth every later task grades against — README claims "newest note first"; code shows insertion order (oldest first) via `server.js:15` (`notes.push(note)`), `server.js:10` (`res.json(notes)` as-is), `app.js:6-13` (render in received order).
+- Produces: the P8 ground truth every later task grades against — the simulated user's
+  intended View-notes behavior is "newest note first" (revealed only if asked); the code
+  shows insertion order (oldest first) via `server.js:15` (`notes.push(note)`),
+  `server.js:10` (`res.json(notes)` as-is), `app.js:6-13` (render in received order).
+  No document states the preference.
 
-- [ ] **Step 1: Edit the fixture README's View-notes flow line**
-
-In `test-fixtures/notes-app/README.md`, replace:
-
-```markdown
-3. **View notes** — notes load automatically when the page opens.
-```
-
-with:
-
-```markdown
-3. **View notes** — notes load automatically when the page opens, newest note first.
-```
-
-- [ ] **Step 2: Verify the plant is pure intent divergence (nothing broken)**
-
-Run: `git diff test-fixtures/notes-app/README.md`
-Expected: exactly one changed line (the flow-3 line above). Confirm by reading `server.js` and `app.js` that the app still *works* (notes render, just oldest-first): `notes.push` at `server.js:15`, unsorted `res.json(notes)` at `server.js:10`, in-order `forEach` render at `app.js:6-13`. Confirm the README still reads as an innocent app README (no test/planted language).
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add test-fixtures/notes-app/README.md
-git commit -m "test: notes-app README states newest-first ordering (P8 setup)"
-```
-
-(Note the commit message itself stays innocent-adjacent for the fixture, but P8's definition lands in `test-fixtures/intent-notes.md` in Task 2 — outside the notes-app directory.)
+- [x] Complete — no further action. The fixture stays byte-identical to its v1.0 state.
 
 ---
 
@@ -63,7 +48,7 @@ git commit -m "test: notes-app README states newest-first ordering (P8 setup)"
 - Create: `test-fixtures/intent-notes.md`
 
 **Interfaces:**
-- Consumes: P8 as planted in Task 1; the UNMODIFIED v1.0 skill at `plugin/skills/pair-vibing/`.
+- Consumes: P8 as defined in Task 1 (unwritten user intent, ask-gated); the UNMODIFIED v1.0 skill at `plugin/skills/pair-vibing/`.
 - Produces: `test-fixtures/intent-notes.md` with the P8 ground-truth table and the RED record; Task 8 appends the GREEN record to this same file.
 
 - [ ] **Step 1: Dispatch the RED reviewer subagent**
@@ -79,8 +64,11 @@ You are reviewing a project for a user, following a skill exactly.
    C:\Users\liewj\Projects\pair-vibing\test-fixtures\notes-app (its code and its README).
 3. This is a non-interactive run — simulate the user as follows:
    - Adversarial verification: OFF.
-   - Inventory sign-off: the user approves the discovered flows as-is, and their intent
-     for each flow is exactly what the notes-app README describes for it.
+   - Inventory sign-off: the user approves the discovered flows as-is. If — and ONLY
+     if — the skill you are executing directs you to ask the user to confirm or correct
+     each flow's INTENDED behavior, the user answers: Add a note — as the README
+     describes; Delete a note — as the README describes; View notes — "notes should
+     show the newest note first." The user never volunteers preferences unasked.
    - Every per-finding decision: defer (do NOT modify any project files).
    - Do NOT write any files anywhere (no tracker file) — include the full tracker
      content and all findings inline in your final report instead.
@@ -91,11 +79,11 @@ You are reviewing a project for a user, following a skill exactly.
 
 - [ ] **Step 2: Grade the report (RED criterion)**
 
-RED passes if and only if the report does **NOT** surface P8 — i.e., no finding about note ordering / "newest first" divergence between the README and the rendered list. (The 1.0 rubric has no intent dimension, so it should have no reason to flag working-but-wrong ordering.)
+RED passes if and only if the report does **NOT** surface P8 — i.e., no finding that the rendered note order diverges from the user's wanted "newest first" ordering. (The 1.0 process has no step that elicits the user's intended behavior, so the preference never enters the run; it cannot flag a divergence from intent it never learns.)
 
 Expected: P8 absent from the report.
 
-**STOP condition:** if the report DOES flag the ordering divergence, the 1.0 skill already catches P8 and the gap this plan fixes is not demonstrated by this plant. STOP, do not proceed to Task 3 — report back to the user with the run output so P8 can be redesigned.
+**STOP condition:** if the report DOES flag the ordering divergence, the 1.0 skill already catches P8 and the gap this plan fixes is not demonstrated. STOP, do not proceed to Task 3 — report back to the controller with the run output so P8 can be redesigned. (First designed-in failure already occurred and was resolved: see the Task 1 amendment note.)
 
 - [ ] **Step 3: Create `test-fixtures/intent-notes.md` with ground truth + RED record**
 
@@ -107,24 +95,28 @@ Create the file with this content, filling the bracketed RED section from the ac
 Ground truth for the planted intent-mismatch defect and the RED/GREEN runs for the
 pair-vibing v1.1 intent-alignment upgrade. P1–P7 are defined in `baseline-notes.md`.
 
-## P8 — planted intent mismatch
+## P8 — intent mismatch (unwritten user intent)
 
 | ID | Flow | Severity | Dimension | Defect | Evidence |
 |----|------|----------|-----------|--------|----------|
-| P8 | View notes | major | intent | README promises "newest note first"; the app renders insertion order (oldest first). Nothing is broken — a pure divergence from stated intent. | `notes-app/README.md:8` (claim) vs `notes-app/server.js:15` (push → insertion order), `server.js:10` (returned as-is), `notes-app/app.js:6-13` (rendered in order) |
+| P8 | View notes | major | intent | The user's intended behavior — "newest note first", revealed only when asked at sign-off — diverges from actual behavior: the app renders insertion order (oldest first). Nothing is broken and no document states the preference — a pure divergence from unwritten intent. | user-blessed intent (elicited at sign-off) vs `notes-app/server.js:15` (push → insertion order), `server.js:10` (returned as-is), `notes-app/app.js:6-13` (rendered in order) |
 
 Severity rationale: a stated rule (ordering) is violated but the core outcome (notes
 visible) is right → major, per the intent severity mapping in `review-rubric.md`.
 
+Test protocol: the simulated user approves the inventory as-is and reveals the ordering
+preference ONLY if the skill directs the agent to ask for each flow's intended behavior.
+The protocol is identical for RED and GREEN; only the skill version differs.
+
 ## RED — v1.0 skill (pre-upgrade), 2026-07-02
 
-Run: one subagent executing the unmodified v1.0 skill against the planted fixture,
-README-as-intent, verification off, all decisions deferred, analysis inline.
+Run: one subagent executing the unmodified v1.0 skill against the fixture,
+ask-gated user intent, verification off, all decisions deferred, analysis inline.
 
 Findings surfaced: [list the finding titles the run actually reported, one line each]
 
-Verdict: **P8 NOT surfaced — RED confirmed.** The v1.0 rubric has no intent dimension;
-working-but-wrong ordering had no dimension to land in.
+Verdict: **P8 NOT surfaced — RED confirmed.** The v1.0 process never asks for intended
+behavior, so the user's ordering preference never entered the run.
 ```
 
 - [ ] **Step 4: Commit**
@@ -731,7 +723,7 @@ Dispatch ONE general-purpose subagent with the IDENTICAL prompt from Task 2 Step
 - [ ] **Step 2: Grade the report (GREEN criteria — all four MUST hold)**
 
 1. **Walkthrough + intent verdict present for each of the 3 flows** (Add / Delete / View), walkthroughs as numbered steps with `file:line` evidence.
-2. **P8 surfaced** as a finding with dimension `intent`: ordering diverges from the README's "newest note first", citing `notes-app/README.md` and `app.js`/`server.js`.
+2. **P8 surfaced** as a finding with dimension `intent`: the rendered note order (insertion order, oldest first) diverges from the user's blessed "newest note first" intent — elicited at sign-off — citing `app.js`/`server.js` evidence. (No README citation for the intent: the README is silent on ordering.)
 3. **P1–P7 all still surfaced**, each with `file:line` evidence:
    1. Add note: `index.html:7` calls `addNote()` but `app.js` defines `createNote()` — blocker, mechanics.
    2. Add note: no empty-title validation — major, edge (`app.js` createNote / `server.js` POST).
@@ -740,7 +732,7 @@ Dispatch ONE general-purpose subagent with the IDENTICAL prompt from Task 2 Step
    5. Delete note: no confirmation before delete — major, ux (`app.js` deleteNote).
    6. Any flow: no fetch error handling — major, edge (`app.js`).
    7. View notes: no empty-state message — minor, ux.
-4. **A 3-flow inventory** with per-flow intent (from the README) reflected.
+4. **A 3-flow inventory** with per-flow blessed intent reflected — including the elicited "newest note first" for View notes.
 
 **STOP condition:** if any criterion fails, do NOT record GREEN. Diagnose which skill file under-instructs (usually SKILL.md Phase 2 or the rubric's intent section), fix it, commit the fix (`fix: <what>`), and re-run this task's Step 1. Repeat until all four criteria hold.
 
@@ -753,9 +745,10 @@ Append (filling the bracketed line from the actual run):
 
 Run: identical protocol to RED, against the upgraded v1.1 skill.
 
-Result: walkthrough + intent verdict presented for all 3 flows; **P8 surfaced as an
-`intent` finding** (ordering diverges from README's "newest note first") with evidence;
-P1–P7 all still surfaced with `file:line` evidence. [note any extra findings or deviations]
+Result: walkthrough + intent verdict presented for all 3 flows; the sign-off elicited
+the user's "newest note first" intent; **P8 surfaced as an `intent` finding** (rendered
+order diverges from blessed intent) with evidence; P1–P7 all still surfaced with
+`file:line` evidence. [note any extra findings or deviations]
 
 Verdict: **GREEN — the intent-alignment upgrade catches what v1.0 could not, with no
 regression on the original seven planted defects.**
@@ -776,10 +769,11 @@ with:
 caught all 7 — organized into a per-flow inventory with severity and `file:line` evidence. See
 `test-fixtures/baseline-notes.md` (RED) and `test-fixtures/with-skill-notes.md` (GREEN).
 
-The v1.1 intent-alignment upgrade was built the same way: an 8th defect that works
-perfectly but diverges from stated intent (notes ordered oldest-first where the app's
-README promises newest-first) was planted; the 1.0 skill missed it, the 1.1 skill
-catches it as an `intent` finding. See `test-fixtures/intent-notes.md`.
+The v1.1 intent-alignment upgrade was built the same way: an 8th defect was defined
+that works perfectly and appears in no document — the simulated user wanted notes
+newest-first but only says so when asked. The 1.0 skill, which never asks, missed it;
+the 1.1 skill elicits intent at sign-off and catches it as an `intent` finding. See
+`test-fixtures/intent-notes.md`.
 ```
 
 - [ ] **Step 5: Final consistency check**

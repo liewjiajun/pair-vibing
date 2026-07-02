@@ -113,21 +113,29 @@ is both halves: the flow works, **and** it works the way the user meant.
   you intended, plus mechanics, edge cases, dead ends, and UX…". plugin.json version
   → 1.1.0.
 
-### 6. Test — planted intent-mismatch defect P8 (TDD-for-skills)
+### 6. Test — intent-mismatch defect P8 (TDD-for-skills)
 
-- **Plant:** `test-fixtures/notes-app/README.md` flow 3 becomes
-  *"View notes — notes load automatically when the page opens, newest note first."*
-  The code (server insertion order + `app.js` in-order render) shows oldest first.
-  Nothing is broken — no 1.0 dimension catches it; it is a pure intent divergence.
-  The fixture stays "innocent": its README reads as a normal app README and must not
-  mention planted defects or testing.
+> **Amended 2026-07-02:** the original design planted the ordering claim in the fixture
+> README. The RED run caught it — a doc-stated behavior becomes the flow's *goal* at
+> sign-off, and even the 1.0 skill checks flows against their stated goals (it was
+> flagged as a mechanics finding). P8 is redesigned as **unwritten user intent**, which
+> is the gap this feature actually fills.
+
+- **Define (no file plant):** the fixture stays byte-identical to its v1.0 state; no
+  document mentions ordering. P8 lives in the simulated user's head: their intended
+  View-notes behavior is *"newest note first"*, which they reveal **only if asked** for
+  intended behavior. Ground truth: the code renders insertion order (oldest first) via
+  `server.js:15` (push), `server.js:10` (returned as-is), `app.js:6-13` (in-order render).
+  Nothing is broken; nothing is written down — a pure divergence from unwritten intent.
 - **RED:** dispatch a reviewer subagent with the current 1.0 skill content against the
-  planted fixture (fixture README stands in for blessed intent, per the precedence
-  rule). Pass criterion for RED is solely that P8 is **not** surfaced — P1–P7 coverage
-  by the 1.0 skill is already evidenced in `with-skill-notes.md` and is not re-graded here.
-- **GREEN:** same run with the 1.1 skill content. Expected: P8 surfaced as an `intent`
-  finding with evidence (README claim vs `app.js`/`server.js` behavior), and P1–P7
-  still surfaced.
+  fixture. The simulated user approves the inventory as-is and answers intent questions
+  only when the skill directs the agent to ask. Pass criterion for RED is solely that
+  P8 is **not** surfaced — the 1.0 process has no step that elicits the preference, so
+  it cannot know it. P1–P7 coverage by the 1.0 skill is already evidenced in
+  `with-skill-notes.md` and is not re-graded here.
+- **GREEN:** identical protocol with the 1.1 skill content. Expected: the sign-off
+  elicits "newest note first"; P8 surfaced as an `intent` finding with evidence (blessed
+  intent vs `app.js`/`server.js` behavior), and P1–P7 still surfaced.
 - **Record:** both runs in a new `test-fixtures/intent-notes.md` (ground-truth table for
   P8 + run outcomes). Existing `baseline-notes.md` / `with-skill-notes.md` remain
   untouched as historical 1.0 evidence.
