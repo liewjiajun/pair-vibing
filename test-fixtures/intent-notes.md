@@ -42,3 +42,24 @@ Findings surfaced:
 
 Verdict: **P8 NOT surfaced — RED confirmed.** The v1.0 process never asks for intended
 behavior, so the user's ordering preference never entered the run.
+
+## GREEN — v1.1 skill, 2026-07-02
+
+Run: identical protocol to RED, against the upgraded v1.1 skill.
+
+Result: walkthrough + intent verdict presented for all 3 flows; the sign-off elicited
+the user's "newest note first" intent; **P8 surfaced as an `intent` finding** (rendered
+order diverges from blessed intent) with evidence; P1–P7 all still surfaced with
+`file:line` evidence. The quote-gate opened legitimately: the run quoted the mandating
+"Bless intent per flow: ask the user to confirm or correct each flow's goal and key
+steps as their INTENDED behavior" line verbatim, attributed to
+`references/flow-discovery.md` (grep-verified). Extra findings beyond the planted set:
+two consequential blocker `intent` findings (the blessed Add/Delete outcomes never
+happen — P1/P4 restated through the intent lens), a double-submit race, no undo after
+delete, and no loading indicator. Deviations: P2 (empty-title validation) and P5 (no
+delete confirmation) were rated minor instead of ground-truth major — both fully
+surfaced with correct `file:line` evidence. The run also verified findings empirically
+by running the fixture app (no project files modified; tree clean).
+
+Verdict: **GREEN — the intent-alignment upgrade catches what v1.0 could not, with no
+regression on the original seven planted defects.**

@@ -111,6 +111,12 @@ skill caught 5 of 7 planted defects with no structure, while the same review **w
 caught all 7 — organized into a per-flow inventory with severity and `file:line` evidence. See
 `test-fixtures/baseline-notes.md` (RED) and `test-fixtures/with-skill-notes.md` (GREEN).
 
+The v1.1 intent-alignment upgrade was built the same way: an 8th defect was defined
+that works perfectly and appears in no document — the simulated user wanted notes
+newest-first but only says so when asked. The 1.0 skill, which never asks, missed it;
+the 1.1 skill elicits intent at sign-off and catches it as an `intent` finding. See
+`test-fixtures/intent-notes.md`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
