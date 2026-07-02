@@ -64,11 +64,18 @@ You are reviewing a project for a user, following a skill exactly.
    C:\Users\liewj\Projects\pair-vibing\test-fixtures\notes-app (its code and its README).
 3. This is a non-interactive run — simulate the user as follows:
    - Adversarial verification: OFF.
-   - Inventory sign-off: the user approves the discovered flows as-is. If — and ONLY
-     if — the skill you are executing directs you to ask the user to confirm or correct
-     each flow's INTENDED behavior, the user answers: Add a note — as the README
-     describes; Delete a note — as the README describes; View notes — "notes should
-     show the newest note first." The user never volunteers preferences unasked.
+   - Inventory sign-off: the user approves the discovered flows as-is (no additions,
+     removals, or reordering). Presenting the inventory — including any per-flow goal
+     fields — earns exactly "approved as-is" and nothing more. The user reveals
+     behavioral preferences ONLY under this condition: the skill text you are executing
+     contains an explicit instruction, as a distinct step, to ask the user to state,
+     confirm, or correct each flow's INTENDED behavior. If that condition holds, you
+     must (a) QUOTE the mandating skill line verbatim in your report at the sign-off
+     point, naming its source file, and only then (b) the user answers: Add a note — as
+     the README describes; Delete a note — as the README describes; View notes —
+     "notes should show the newest note first." If you cannot quote such a line from
+     the skill files, the user confirms the inventory silently and reveals nothing.
+     The user never volunteers preferences unasked, anywhere in the run.
    - Every per-finding decision: defer (do NOT modify any project files).
    - Do NOT write any files anywhere (no tracker file) — include the full tracker
      content and all findings inline in your final report instead.
@@ -78,6 +85,17 @@ You are reviewing a project for a user, following a skill exactly.
 ```
 
 - [ ] **Step 2: Grade the report (RED criterion)**
+
+**Protocol validity check (before grading):** if the report shows the user revealed the
+ordering preference, it must contain a verbatim quote of the skill line mandating the
+intended-behavior question, with its source file. Verify the quote exists:
+`grep -rF "<quoted text>" plugin/skills/pair-vibing/` — AND judge that the quoted line
+actually instructs the agent to ask the user to state/confirm/correct intended behavior
+(quoting the v1.0 sign-off line "add missing flows, remove anything that is not a real
+user flow, and set a priority order" does NOT qualify — it asks nothing about behavior).
+A missing, fabricated, misattributed, or non-qualifying quote makes the run INVALID
+(protocol violation, not a skill capability) — re-dispatch the reviewer subagent once.
+If the second run is also invalid, report BLOCKED with both runs' sign-off sections.
 
 RED passes if and only if the report does **NOT** surface P8 — i.e., no finding that the rendered note order diverges from the user's wanted "newest first" ordering. (The 1.0 process has no step that elicits the user's intended behavior, so the preference never enters the run; it cannot flag a divergence from intent it never learns.)
 
@@ -105,8 +123,10 @@ Severity rationale: a stated rule (ordering) is violated but the core outcome (n
 visible) is right → major, per the intent severity mapping in `review-rubric.md`.
 
 Test protocol: the simulated user approves the inventory as-is and reveals the ordering
-preference ONLY if the skill directs the agent to ask for each flow's intended behavior.
-The protocol is identical for RED and GREEN; only the skill version differs.
+preference ONLY if the run quotes, verbatim with file attribution, a skill line that
+explicitly mandates asking the user to confirm or correct each flow's intended behavior
+(v1.0 has no such line; v1.1 does). The protocol is identical for RED and GREEN; only
+the skill version differs.
 
 ## RED — v1.0 skill (pre-upgrade), 2026-07-02
 
@@ -733,8 +753,9 @@ Dispatch ONE general-purpose subagent with the IDENTICAL prompt from Task 2 Step
    6. Any flow: no fetch error handling — major, edge (`app.js`).
    7. View notes: no empty-state message — minor, ux.
 4. **A 3-flow inventory** with per-flow blessed intent reflected — including the elicited "newest note first" for View notes.
+5. **The ask-gate opened legitimately:** the report quotes, verbatim with file attribution, the v1.1 skill line mandating the intent question (the "Bless intent per flow: ask the user to confirm or correct…" instruction in `references/flow-discovery.md`, or SKILL.md Phase 1's blessing line), and `grep -rF` confirms the quote exists in `plugin/skills/pair-vibing/`.
 
-**STOP condition:** if any criterion fails, do NOT record GREEN. Diagnose which skill file under-instructs (usually SKILL.md Phase 2 or the rubric's intent section), fix it, commit the fix (`fix: <what>`), and re-run this task's Step 1. Repeat until all four criteria hold.
+**STOP condition:** if any of criteria 1–4 fails (or criterion 5's quote is missing/fabricated), do NOT record GREEN. Diagnose which skill file under-instructs (usually SKILL.md Phase 2 or the rubric's intent section), fix it, commit the fix (`fix: <what>`), and re-run this task's Step 1. Repeat until all four criteria hold.
 
 - [ ] **Step 3: Append the GREEN record to `test-fixtures/intent-notes.md`**
 

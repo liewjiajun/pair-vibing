@@ -129,9 +129,11 @@ is both halves: the flow works, **and** it works the way the user meant.
   Nothing is broken; nothing is written down — a pure divergence from unwritten intent.
 - **RED:** dispatch a reviewer subagent with the current 1.0 skill content against the
   fixture. The simulated user approves the inventory as-is and answers intent questions
-  only when the skill directs the agent to ask. Pass criterion for RED is solely that
-  P8 is **not** surfaced — the 1.0 process has no step that elicits the preference, so
-  it cannot know it. P1–P7 coverage by the 1.0 skill is already evidenced in
+  only when the run can QUOTE, verbatim with file attribution, a skill line that
+  explicitly mandates asking the user to confirm or correct each flow's intended
+  behavior (quote-gated — presenting flow goals at sign-off does not qualify; 1.0 has
+  no qualifying line, so the preference never enters the run). Pass criterion for RED
+  is solely that P8 is **not** surfaced. P1–P7 coverage by the 1.0 skill is already evidenced in
   `with-skill-notes.md` and is not re-graded here.
 - **GREEN:** identical protocol with the 1.1 skill content. Expected: the sign-off
   elicits "newest note first"; P8 surfaced as an `intent` finding with evidence (blessed
